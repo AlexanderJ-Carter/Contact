@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alexander - 联系我</title>
+    <meta name="description" content="Alexander的联系方式 - 多种方式与我取得联系，包含邮箱、社交媒体等">
+    <meta name="keywords" content="Alexander, 联系方式, 邮箱, GitHub, LinkedIn, 社交媒体">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✉️</text></svg>">
+
+    <!-- 字体引入 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+
+    <style>
+        :root {
+            /* 主色调 - 现代蓝紫渐变 */
+            --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-dark: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            --accent: #10b981;
+            --accent-light: #34d399;
+
+            /* 文字颜色 */
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-light: #718096;
+
+            /* 背景色 */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f7fafc;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-overlay: rgba(0, 0, 0, 0.75);
+
+            /* 边框和阴影 */
+            --border: rgba(226, 232, 240, 0.8);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+            /* 动画时间 */
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+
+            /* 间距 */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+
+            /* 圆角 */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        /* 人机验证界面 */
+        .verification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-overlay);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .verification-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-xl);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .verification-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .verification-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xl);
+            line-height: 1.6;
+        }
+
+        .verification-content {
+            margin-bottom: var(--space-xl);
+        }
+
+        .continue-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: var(--space-md) var(--space-xl);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .continue-btn.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .continue-btn:hover.enabled {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 主内容隐藏状态 */
+        .main-content {
+            display: none;
+        }
+
+        .main-content.verified {
+            display: block;
+        }
+
+        /* 验证界面图标样式 */
+        .verification-title i {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+
+        .continue-btn i {
+            margin-right: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: #0f172a;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* 动态背景 */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(-45deg,
+                    #667eea, #764ba2, #f093fb, #f5576c,
+                    #4facfe, #00f2fe, #43e97b, #38f9d7);
+            background-size: 400% 400%;
+            animation: gradientFlow 20s ease infinite;
+        }
+
+        .background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            animation: floatingBubbles 15s ease-in-out infinite;
+        }
+
+        @keyframes gradientFlow {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            25% {
+                background-position: 100% 50%;
+            }
+
+            50% {
+                background-position: 100% 100%;
+            }
+
+            75% {
+                background-position: 0% 100%;
+            }
+        }
+
+        @keyframes floatingBubbles {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(30px, -30px) rotate(120deg);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) rotate(240deg);
+            }
+        }
+
+        /* 粒子效果背景 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) translateX(0px);
+                opacity: 0;
+            }
+
+            50% {
+                transform: translateY(-20px) translateX(10px);
+                opacity: 1;
+            }
+        }
+
+        /* 主容器 */
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-lg);
+            position: relative;
+        }
+
+        .main-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            padding: var(--space-xl);
+            max-width: 680px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.4),
+                    transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* 头部区域 */
+        .header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+            position: relative;
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: var(--space-lg);
+        }
+
+        .avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: white;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            animation: avatarPulse 4s ease-in-out infinite;
+        }
+
+        .avatar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.3),
+                    transparent);
+            animation: rotate 3s linear infinite;
+        }
+
+        .avatar-icon {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 头像图片样式 */
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 图片加载失败时显示备用图标 */
+        .avatar-fallback {
+            display: none;
+        }
+
+        .avatar-image:error + .avatar-fallback,
+        .avatar-image[src=""] + .avatar-fallback,
+        .avatar:not(:has(.avatar-image)) .avatar-fallback {
+            display: flex;
+        }
+
+        @keyframes avatarPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: var(--shadow-lg), 0 0 0 0 rgba(102, 126, 234, 0.7);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: var(--shadow-xl), 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+        }
+
+        @keyframes rotate {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: var(--space-sm);
+            background: var(--primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
+            font-weight: 400;
+        }
+
+        /* 快速操作区域 */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .quick-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-xs);
+            padding: var(--space-md);
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent);
+            transition: left 0.5s ease;
+        }
+
+        .quick-btn:hover::before {
+            left: 100%;
+        }
+
+        .quick-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quick-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* 联系方式网格 */
+        .contact-grid {
+            display: grid;
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            padding: var(--space-md);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .contact-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    rgba(102, 126, 234, 0.05) 0%,
+                    rgba(118, 75, 162, 0.05) 100%);
+            transition: width var(--transition-normal);
+        }
+
+        .contact-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .contact-item:hover::before {
+            width: 100%;
+        }
+
+        .contact-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            color: white;
+            margin-right: var(--space-md);
+            position: relative;
+            z-index: 2;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .contact-content {
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .contact-subtitle {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .contact-arrow {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 2;
+            transition: all var(--transition-normal);
+        }
+
+        .contact-item:hover .contact-arrow {
+            color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        /* 联系方式图标颜色 */
+        .icon-email {
+            background: linear-gradient(135deg, #ea4335 0%, #fbbc05 100%);
+        }
+
+        .icon-github {
+            background: linear-gradient(135deg, #24292e 0%, #586069 100%);
+        }
+
+        .icon-wechat {
+            background: linear-gradient(135deg, #1aad19 0%, #2dc653 100%);
+        }
+
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-overlay);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-primary);
+            padding: var(--space-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform var(--transition-normal);
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-md);
+            color: var(--text-primary);
+        }
+
+        .qr-placeholder {
+            width: 200px;
+            height: 200px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-md);
+            border: 2px dashed var(--border);
+        }
+
+        .qr-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: var(--radius-lg);
+        }
+
+        .qr-fallback {
+            font-size: 4rem;
+            color: var(--text-light);
+            display: none;
+        }
+
+        .qr-placeholder i {
+            font-size: 4rem;
+            color: var(--text-light);
+        }
+
+        .modal-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+        }
+
+        .modal-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* 提示消息 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            transform: translateX(400px);
+            transition: transform var(--transition-normal);
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-weight: 600;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--space-sm);
+            }
+
+            .main-card {
+                padding: var(--space-lg);
+            }
+
+            .title {
+                font-size: 2.5rem;
+            }
+
+            .avatar {
+                width: 120px;
+                height: 120px;
+                font-size: 3rem;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-item {
+                padding: var(--space-sm);
+            }
+
+            .contact-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 1.5rem;
+                margin-right: var(--space-sm);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+
+            .modal-content {
+                padding: var(--space-lg);
+                margin: var(--space-sm);
+            }
+
+            .qr-placeholder {
+                width: 160px;
+                height: 160px;
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 打字机效果 */
+        .typewriter {
+            overflow: hidden;
+            border-right: 0.15em solid var(--accent);
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: 0.05em;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent;
+            }
+
+            50% {
+                border-color: var(--accent);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 人机验证界面 -->
+    <div class="verification-overlay" id="verificationOverlay">
+        <div class="verification-card">
+            <div class="verification-title">
+                <i class="fas fa-shield-alt"></i>
+                安全验证
+            </div>
+            <div class="verification-description">
+                为了保护网站安全，请完成以下人机验证
+            </div>
+            <div class="verification-content">
+                <!-- Cloudflare Turnstile 验证组件 -->
+                <div class="cf-turnstile" 
+                     data-sitekey="0x4AAAAAAB3f0djvtTdHEuIZ" 
+                     data-callback="onTurnstileSuccess"
+                     data-theme="light">
+                </div>
+            </div>
+            <button class="continue-btn" id="continueBtn" onclick="enterSite()">
+                <i class="fas fa-arrow-right"></i>
+                进入联系页面
+            </button>
+        </div>
+    </div>
+
+    <!-- 主要内容 -->
+    <div class="main-content" id="mainContent">
+        <!-- 动态背景 -->
+        <div class="background"></div>
+
+        <!-- 粒子效果 -->
+        <div class="particles" id="particles"></div>
+
+        <!-- 提示消息 -->
+        <div class="toast" id="toast">
+            <i class="fas fa-check"></i>
+            <span>已复制到剪贴板！</span>
+        </div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <div class="main-card">
+            <!-- 头部信息 -->
+            <header class="header">
+                <div class="avatar-container">
+                    <div class="avatar">
+                        <!-- 使用本地图片文件 -->
+                        <img src="photo.png" alt="Alexander" class="avatar-image" />
+                        
+                        <!-- 备用图标（如果图片加载失败） -->
+                        <i class="fas fa-user-tie avatar-icon avatar-fallback"></i>
+                    </div>
+                </div>
+                <h1 class="title">Alexander</h1>
+                <p class="subtitle typewriter">让我们保持联系，探索更多可能</p>
+            </header>
+
+            <!-- 快速操作 -->
+            <section class="quick-actions">
+                <a href="mailto:contact-us@alexander.xin?subject=来自网站的问候&body=你好 Alexander，%0D%0A%0D%0A我通过您的联系页面找到了您，想要..."
+                    class="quick-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>发送邮件</span>
+                </a>
+                <button class="quick-btn" onclick="scheduleCall()">
+                    <i class="fas fa-video"></i>
+                    <span>预约会面</span>
+                </button>
+            </section>
+
+            <!-- 联系方式网格 -->
+            <section class="contact-grid">
+                <!-- 邮箱 -->
+                <a href="mailto:contact-us@alexander.xin" class="contact-item">
+                    <div class="contact-icon icon-email">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-content">
+                        <div class="contact-title">邮箱联系</div>
+                        <div class="contact-subtitle">contact-us@alexander.xin</div>
+                    </div>
+                    <i class="fas fa-external-link-alt contact-arrow"></i>
+                </a>
+
+                <!-- GitHub -->
+                <a href="https://github.com/alexanderxin" class="contact-item" target="_blank" rel="noopener">
+                    <div class="contact-icon icon-github">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <div class="contact-content">
+                        <div class="contact-title">GitHub</div>
+                        <div class="contact-subtitle">@alexanderxin</div>
+                    </div>
+                    <i class="fas fa-external-link-alt contact-arrow"></i>
+                </a>
+
+                <!-- 微信 -->
+                <div class="contact-item" onclick="showWeChatModal()">
+                    <div class="contact-icon icon-wechat">
+                        <i class="fab fa-weixin"></i>
+                    </div>
+                    <div class="contact-content">
+                        <div class="contact-title">微信</div>
+                        <div class="contact-subtitle">扫码添加好友</div>
+                    </div>
+                    <i class="fas fa-qrcode contact-arrow"></i>
+                </div>
+            </section>
+
+            <!-- 页脚 -->
+            <footer class="footer">
+                <div class="footer-text">
+                    © 2024 Alexander · 期待与您的交流合作
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- 微信二维码模态框 -->
+    <div class="modal" id="wechatModal">
+        <div class="modal-content">
+            <h3 class="modal-title">微信二维码</h3>
+            <div class="qr-placeholder">
+                <img src="wechat-qr.jpg" alt="微信二维码" class="qr-image" />
+                <i class="fas fa-qrcode qr-fallback"></i>
+            </div>
+            <p class="modal-subtitle">扫描二维码添加微信好友</p>
+            <button class="modal-btn" onclick="closeWeChatModal()">关闭</button>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function () {
+            // 只初始化粒子效果，其他功能等待验证完成后再初始化
+            initializeParticles();
+        });
+
+        // 人机验证相关函数
+        let isVerified = false;
+
+        // Turnstile验证成功回调
+        function onTurnstileSuccess(token) {
+            isVerified = true;
+            const continueBtn = document.getElementById('continueBtn');
+            continueBtn.classList.add('enabled');
+        }
+
+        // 进入网站
+        function enterSite() {
+            if (!isVerified) {
+                return;
+            }
+            
+            const verificationOverlay = document.getElementById('verificationOverlay');
+            const mainContent = document.getElementById('mainContent');
+            
+            // 添加淡出动画
+            verificationOverlay.style.transition = 'opacity 0.5s ease-out';
+            verificationOverlay.style.opacity = '0';
+            
+            setTimeout(() => {
+                verificationOverlay.style.display = 'none';
+                mainContent.classList.add('verified');
+                
+                // 初始化主页面功能
+                initializeMainPage();
+            }, 500);
+        }
+
+        // 初始化主页面
+        function initializeMainPage() {
+            initializeAnimations();
+            initializeTypewriter();
+            initializeAvatar();
+        }
+
+        function initializeAvatar() {
+            const avatarImage = document.querySelector('.avatar-image');
+            const avatarFallback = document.querySelector('.avatar-fallback');
+            
+            if (avatarImage) {
+                // 处理图片加载失败
+                avatarImage.addEventListener('error', function() {
+                    this.style.display = 'none';
+                    if (avatarFallback) {
+                        avatarFallback.style.display = 'flex';
+                    }
+                });
+                
+                // 处理图片加载成功
+                avatarImage.addEventListener('load', function() {
+                    if (avatarFallback) {
+                        avatarFallback.style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        // 创建粒子效果
+        function initializeParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                createParticle(particlesContainer);
+            }
+        }
+
+        function createParticle(container) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 6 + 's';
+            particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+
+            container.appendChild(particle);
+        }
+
+        // 初始化动画
+        function initializeAnimations() {
+            const contactItems = document.querySelectorAll('.contact-item');
+            contactItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+                item.style.animation = 'slideInUp 0.6s ease-out forwards';
+            });
+        }
+
+        // 打字机效果
+        function initializeTypewriter() {
+            const typewriterElement = document.querySelector('.typewriter');
+            if (!typewriterElement) return;
+
+            const texts = [
+                '让我们保持联系，探索更多可能',
+                '期待与您的深度交流合作',
+                '开源爱好者 · 技术探索者',
+                '用代码连接世界的每一个角落'
+            ];
+
+            let textIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+
+            function type() {
+                const currentText = texts[textIndex];
+
+                if (isDeleting) {
+                    typewriterElement.textContent = currentText.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    typewriterElement.textContent = currentText.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+
+                let typeSpeed = isDeleting ? 50 : 100;
+
+                if (!isDeleting && charIndex === currentText.length) {
+                    typeSpeed = 2000;
+                    isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    textIndex = (textIndex + 1) % texts.length;
+                    typeSpeed = 500;
+                }
+
+                setTimeout(type, typeSpeed);
+            }
+
+            setTimeout(type, 1000);
+        }
+
+        // 复制到剪贴板
+        function copyToClipboard(text, message = '已复制到剪贴板！') {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast(message);
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(text, message);
+                });
+            } else {
+                fallbackCopyTextToClipboard(text, message);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text, message) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+
+            try {
+                document.execCommand('copy');
+                showToast(message);
+            } catch (err) {
+                showToast('复制失败，请手动复制');
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        // 显示提示消息
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const span = toast.querySelector('span');
+            span.textContent = message;
+
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 显示微信二维码
+        function showWeChatModal() {
+            const modal = document.getElementById('wechatModal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭微信二维码
+        function closeWeChatModal() {
+            const modal = document.getElementById('wechatModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 预约通话
+        function scheduleCall() {
+            const message = `你好 Alexander！
+
+我通过您的联系页面找到了您，希望能够与您进行一次深入的交流。
+
+我感兴趣的话题：
+□ 技术合作
+□ 项目咨询
+□ 经验分享
+□ 其他：_______
+
+我的可用时间：
+□ 工作日上午 (9:00-12:00)
+□ 工作日下午 (14:00-18:00)
+□ 工作日晚上 (19:00-21:00)
+□ 周末时间
+
+请问您什么时候方便？期待您的回复！`;
+
+            const mailtoLink = `mailto:contact-us@alexander.xin?subject=预约交流时间&body=${encodeURIComponent(message)}`;
+            window.location.href = mailtoLink;
+        }
+
+        // 键盘快捷键
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeWeChatModal();
+            }
+
+            if ((e.ctrlKey || e.metaKey) && e.key === 'c' && !window.getSelection().toString()) {
+                e.preventDefault();
+                copyToClipboard('contact-us@alexander.xin', '邮箱地址已复制！');
+            }
+        });
+
+        // 点击外部关闭模态框
+        document.getElementById('wechatModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeWeChatModal();
+            }
+        });
+
+        // 彩蛋功能
+        let konamiCode = [];
+        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+
+        document.addEventListener('keydown', function (e) {
+            konamiCode.push(e.code);
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+
+            if (konamiCode.join('') === konamiSequence.join('')) {
+                showToast('🎉 发现彩蛋！你找到了隐藏功能！');
+                document.body.style.filter = 'hue-rotate(180deg)';
+                setTimeout(() => {
+                    document.body.style.filter = '';
+                }, 3000);
+                konamiCode = [];
+            }
+        });
+    </script>
+</body>
+
+</html>
