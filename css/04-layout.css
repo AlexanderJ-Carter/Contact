@@ -1,0 +1,16 @@
+/**
+ * 04 - Layout Layer
+ * 页面结构、网格、容器
+ * @layer layout
+ */
+
+@layer layout {
+  .container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(var(--space-4), 5vw, var(--space-8));
+    position: relative;
+  }
+}

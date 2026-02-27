@@ -1,0 +1,736 @@
+/**
+ * 05 - Components Layer
+ * Aurora 主题 UI 组件
+ * @layer components
+ */
+
+@layer components {
+    /* ============================================================
+     背景：Aurora 光球
+  ============================================================ */
+
+    /* 固定深色底面 */
+    body {
+        background-color: var(--surface);
+    }
+
+    .bg-orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(100px);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Orb 1 — 左上，靛蓝 */
+    .bg-orb--1 {
+        width: 600px;
+        height: 600px;
+        background: var(--color-orb-1);
+        top: -180px;
+        left: -120px;
+        animation: orbDrift1 18s ease-in-out infinite alternate;
+    }
+
+    /* Orb 2 — 右上，紫罗兰 */
+    .bg-orb--2 {
+        width: 500px;
+        height: 500px;
+        background: var(--color-orb-2);
+        top: -100px;
+        right: -140px;
+        animation: orbDrift2 22s ease-in-out infinite alternate;
+    }
+
+    /* Orb 3 — 底部，玫红 */
+    .bg-orb--3 {
+        width: 700px;
+        height: 700px;
+        background: var(--color-orb-3);
+        bottom: -280px;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: orbDrift3 26s ease-in-out infinite alternate;
+    }
+
+    @keyframes orbDrift1 {
+        from {
+            transform: translate(0, 0) scale(1);
+        }
+        to {
+            transform: translate(60px, 80px) scale(1.12);
+        }
+    }
+    @keyframes orbDrift2 {
+        from {
+            transform: translate(0, 0) scale(1);
+        }
+        to {
+            transform: translate(-70px, 60px) scale(0.9);
+        }
+    }
+    @keyframes orbDrift3 {
+        from {
+            transform: translateX(-50%) scale(1);
+        }
+        to {
+            transform: translateX(calc(-50% + 50px)) scale(1.1);
+        }
+    }
+
+    /* 网格叠加 */
+    .bg-grid {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        background-image:
+            linear-gradient(rgba(148, 163, 184, 0.025) 1px, transparent 1px),
+            linear-gradient(
+                90deg,
+                rgba(148, 163, 184, 0.025) 1px,
+                transparent 1px
+            );
+        background-size: 40px 40px;
+        mask-image: radial-gradient(
+            ellipse 80% 80% at 50% 50%,
+            black 30%,
+            transparent 100%
+        );
+        pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .bg-orb {
+            animation: none;
+        }
+    }
+
+    /* ============================================================
+     验证遮罩
+  ============================================================ */
+
+    .verification-overlay {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        padding: var(--space-6);
+        background: rgba(7, 7, 15, 0.6);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+
+    .verification-card {
+        background: var(--surface-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2xl);
+        padding: var(--space-10);
+        max-width: 340px;
+        width: 100%;
+        text-align: center;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* 顶部微光装饰 */
+    .verification-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            var(--color-border-glow),
+            transparent
+        );
+    }
+
+    .verification-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: var(--radius-lg);
+        background: linear-gradient(
+            135deg,
+            rgba(129, 140, 248, 0.2),
+            rgba(192, 132, 252, 0.15)
+        );
+        border: 1px solid rgba(129, 140, 248, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        color: var(--primary);
+        margin: 0 auto var(--space-5);
+    }
+
+    .verification-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: var(--space-2);
+        letter-spacing: -0.02em;
+    }
+
+    .verification-description {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        margin-bottom: var(--space-6);
+        line-height: 1.6;
+    }
+
+    .verification-content {
+        margin-bottom: var(--space-5);
+        display: flex;
+        justify-content: center;
+    }
+
+    .continue-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-6);
+        background: linear-gradient(135deg, var(--primary), #a78bfa);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: var(--transition);
+        opacity: 0.45;
+        pointer-events: none;
+        letter-spacing: 0.01em;
+    }
+
+    .continue-btn.enabled {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .continue-btn.enabled:hover,
+    .continue-btn.enabled:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px -4px rgba(129, 140, 248, 0.5);
+    }
+
+    .continue-btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+    }
+
+    /* ============================================================
+     主内容区 & 容器
+  ============================================================ */
+
+    .main-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ============================================================
+     联系卡片
+  ============================================================ */
+
+    .card {
+        background: var(--surface-card);
+        backdrop-filter: blur(32px);
+        -webkit-backdrop-filter: blur(32px);
+        border-radius: var(--radius-2xl);
+        padding: clamp(var(--space-8), 6vw, var(--space-12));
+        max-width: 460px;
+        width: 100%;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* 渐变边框 */
+    .card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
+        background: linear-gradient(
+            140deg,
+            rgba(129, 140, 248, 0.5) 0%,
+            rgba(192, 132, 252, 0.2) 40%,
+            rgba(244, 114, 182, 0.15) 70%,
+            transparent 100%
+        );
+        -webkit-mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+    }
+
+    /* 顶部光晕 */
+    .card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 30%;
+        width: 40%;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(129, 140, 248, 0.6),
+            transparent
+        );
+        pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .card {
+            animation: cardEnter 0.7s var(--ease-out) both;
+        }
+    }
+
+    @keyframes cardEnter {
+        from {
+            opacity: 0;
+            transform: translateY(32px) scale(0.97);
+            filter: blur(4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+    }
+
+    /* ============================================================
+     卡片头部：头像 + 名字 + 打字机 + 状态徽章
+  ============================================================ */
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: var(--space-8);
+        gap: 0;
+    }
+
+    /* 头像 */
+    .avatar {
+        position: relative;
+        width: 96px;
+        height: 96px;
+        margin-bottom: var(--space-5);
+        flex-shrink: 0;
+    }
+
+    /* 旋转渐变光环 */
+    .avatar-ring {
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        background: conic-gradient(
+            from 0deg,
+            #818cf8,
+            #a78bfa,
+            #f472b6,
+            #818cf8
+        );
+        animation: ringRotate 4s linear infinite;
+        z-index: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .avatar-ring {
+            animation: none;
+        }
+    }
+
+    @keyframes ringRotate {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .avatar-inner {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        overflow: hidden;
+        background: var(--surface);
+        border: 3px solid var(--surface);
+    }
+
+    .avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .avatar-fallback {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--primary), #a78bfa);
+        color: white;
+        font-size: 2rem;
+    }
+
+    /* 名字 */
+    .title {
+        font-size: clamp(1.8rem, 6vw, 2.25rem);
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        color: var(--text-primary);
+        margin-bottom: var(--space-2);
+        line-height: 1.1;
+    }
+
+    /* 打字机副标题 */
+    .subtitle {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        font-family: 'JetBrains Mono', monospace;
+        margin-bottom: var(--space-4);
+        min-height: 1.4em;
+    }
+
+    /* 状态徽章 */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        background: rgba(52, 211, 153, 0.08);
+        border: 1px solid rgba(52, 211, 153, 0.25);
+        border-radius: var(--radius-full);
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--accent);
+        letter-spacing: 0.01em;
+    }
+
+    .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+        flex-shrink: 0;
+        animation: statusPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes statusPulse {
+        0%,
+        100% {
+            box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+        }
+        50% {
+            box-shadow: 0 0 0 5px rgba(52, 211, 153, 0);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .status-dot {
+            animation: none;
+        }
+    }
+
+    /* ============================================================
+     主 CTA 区域
+  ============================================================ */
+
+    .contact-hero {
+        text-align: center;
+        margin-bottom: var(--space-8);
+    }
+
+    /* 通用按钮 */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-6);
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* CTA 大按钮 */
+    .btn-cta {
+        padding: var(--space-4) var(--space-10);
+        font-size: 1.05rem;
+        border-radius: var(--radius-lg);
+        letter-spacing: 0.01em;
+    }
+
+    /* 主色按钮：渐变 + 微光扫过 */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary) 0%, #a78bfa 100%);
+        color: white;
+        box-shadow: 0 4px 20px -4px rgba(129, 140, 248, 0.4);
+    }
+
+    .btn-primary::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 60%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.18),
+            transparent
+        );
+        transition: left 0.5s ease;
+    }
+
+    .btn-primary:hover::after,
+    .btn-primary:focus-visible::after {
+        left: 150%;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus-visible {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px -6px rgba(129, 140, 248, 0.55);
+    }
+
+    .btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+    }
+
+    .contact-tagline {
+        margin-top: var(--space-3);
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        letter-spacing: 0.02em;
+    }
+
+    /* ============================================================
+     联系方式区块
+  ============================================================ */
+
+    .contact-channels {
+        margin-bottom: var(--space-6);
+    }
+
+    .section-heading {
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        margin-bottom: var(--space-3);
+    }
+
+    .contact-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        list-style: none;
+    }
+
+    .contact-list > li {
+        margin: 0;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-4) var(--space-4);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        text-decoration: none;
+        color: inherit;
+        transition: var(--transition);
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+    }
+
+    .contact-item:hover {
+        background: rgba(129, 140, 248, 0.07);
+        border-color: rgba(129, 140, 248, 0.28);
+        transform: translateX(3px);
+    }
+
+    .contact-item:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+    }
+
+    /* 图标 */
+    .contact-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+    }
+
+    .icon-email {
+        background: linear-gradient(135deg, #ea4335 0%, #fbbc05 100%);
+        color: white;
+    }
+
+    .icon-github {
+        background: linear-gradient(135deg, #24292e 0%, #3d3d3d 100%);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* 文字信息 */
+    .contact-info {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .contact-title {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        margin-bottom: 2px;
+    }
+
+    .contact-detail {
+        font-size: 0.775rem;
+        color: var(--text-muted);
+        font-family: 'JetBrains Mono', monospace;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .copy-hint {
+        font-size: 0.68rem;
+        color: var(--accent);
+        margin-top: 2px;
+        opacity: 0;
+        transition: opacity var(--transition);
+    }
+
+    .contact-item:hover .copy-hint {
+        opacity: 1;
+    }
+
+    /* 右侧箭头图标 */
+    .contact-arrow {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        flex-shrink: 0;
+        transition: var(--transition);
+    }
+
+    .contact-item:hover .contact-arrow {
+        color: var(--primary);
+        transform: translateX(3px);
+    }
+
+    [data-copyable]:hover .contact-arrow {
+        transform: none;
+    }
+
+    /* ============================================================
+     Toast 通知
+  ============================================================ */
+
+    .toast {
+        position: fixed;
+        top: var(--space-5);
+        right: var(--space-5);
+        padding: var(--space-3) var(--space-5);
+        background: var(--surface-elevated);
+        border: 1px solid rgba(52, 211, 153, 0.3);
+        color: var(--accent);
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        font-size: 0.875rem;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        z-index: 9999;
+        transform: translateX(calc(100% + var(--space-5)));
+        transition: transform 0.35s var(--ease-spring);
+    }
+
+    .toast.show {
+        transform: translateX(0);
+    }
+
+    /* ============================================================
+     页脚
+  ============================================================ */
+
+    .footer {
+        margin-top: var(--space-8);
+        padding-top: var(--space-5);
+        border-top: 1px solid var(--border);
+        text-align: center;
+        font-size: 0.775rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+    }
+
+    .footer-link {
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color var(--transition);
+    }
+
+    .footer-link:hover {
+        color: var(--primary);
+    }
+
+    /* ============================================================
+     响应式
+  ============================================================ */
+
+    @media (max-width: 480px) {
+        .card {
+            border-radius: var(--radius-xl);
+        }
+
+        .btn-cta {
+            width: 100%;
+        }
+
+        .contact-detail {
+            font-size: 0.72rem;
+        }
+    }
+}

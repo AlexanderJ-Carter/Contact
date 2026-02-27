@@ -1,0 +1,20 @@
+/**
+ * Main Stylesheet - Contact Page
+ *
+ * 采用 ITCSS 分层架构，按依赖顺序导入：
+ * 1. Reset    - 归一化
+ * 2. Variables - 设计令牌
+ * 3. Base    - 文档基础
+ * 4. Layout  - 布局
+ * 5. Components - 组件
+ * 6. Utilities - 工具类
+ */
+
+@layer reset, variables, base, layout, components, utilities;
+
+@import url('./01-reset.css');
+@import url('./02-variables.css');
+@import url('./03-base.css');
+@import url('./04-layout.css');
+@import url('./05-components.css');
+@import url('./06-utilities.css');

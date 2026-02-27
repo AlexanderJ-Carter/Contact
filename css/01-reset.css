@@ -1,0 +1,15 @@
+/**
+ * 01 - Reset Layer
+ * 归一化默认样式，消除浏览器差异
+ * @layer reset
+ */
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+}
